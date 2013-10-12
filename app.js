@@ -156,23 +156,22 @@ function goToStep2(targetStep){
 }
 
 
+function goToNextStep(){
+
+	goToStep(current_step + 1);
+	current_step += 1;
+}
+
+
 function onStageClicked(){
 
-	
-	goToStep(current_step + 1);
-
-	current_step += 1;
+	goToNextStep();
 }
 
 
 function onStepFinished(){
 
-	/*clearOverlay();
-	
-	if(current_step < overlaySteps.length)
-		current_step += 1;
-	if(current_step < overlaySteps.length)
-		goToNextStep();*/
+	goToNextStep();
 }
 
 
