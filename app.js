@@ -3,7 +3,7 @@ var color_value  = 0;
 var overlaySteps  = new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
 var audioFileNames= new Array('audio/1.wav', 'audio/2.wav', 'audio/3.wav');
 var audioSteps    = new Array()
-var current_step  = 0;
+var current_step  = -1;
 var overlay;
 var overlayed = false;
 var stage;
@@ -11,39 +11,9 @@ var stageWidth;
 var stageHeight;
 
 
-function tango(layer) {
-	var color = Kinetic.Util.getRGB(getRandomColor());
-	  
-	for(var n = 0; n < layer.getChildren().length; n++) {
-		var shape = layer.getChildren()[n];
-		var stage = shape.getStage();
-		var radius = Math.random() * 100 + 20;
+function init(){
 
-		new Kinetic.Tween({
-		node: shape, 
-		duration: 1,
-		x: Math.random() * stage.getWidth(), 
-		y: Math.random() * stage.getHeight(), 
-		rotation: Math.random() * Math.PI * 2, 
-		radius: radius,
-		opacity: (radius - 20) / 100,
-		easing: Kinetic.Easings.EaseInOut,
-		fillR: color.r,
-		fillG: color.g,
-		fillB: color.b
-		}).play();
-	}
-}
-
-function highlightCurrentArea()
-{
-
-}
-
-var layer = new Kinetic.Layer();
-var img = new Image();
-img.src = 'img/sample.jpg';
-img.onload = function(){
+	initAudio();
 
 	stageWidth = img.width + 200;
 	stageHeight = img.height;
@@ -70,6 +40,29 @@ img.onload = function(){
 	{
 		onStageClicked();
 	});
+}
+
+function initAudio(){
+
+	for(i=0; i<audioFileNames.length; i+=1){
+		audioSteps[i] = new Audio(audioFileNames[i]);
+		audioSteps[i].addEventListener('ended', function(e){
+			onStepFinished();
+		});
+	}
+}
+
+function highlightCurrentArea()
+{
+
+}
+
+var layer = new Kinetic.Layer();
+var img = new Image();
+img.src = 'img/sample.jpg';
+img.onload = function(){
+
+	init();
 };
 
 
@@ -128,22 +121,6 @@ function getNewOverlay(highlightArea)
 
 function goToStep(targetStep){
 
-	if(overlayed){
-		new Kinetic.Tween({
-			node: overlay, 
-			duration: 0.5,
-			opacity: 0,
-			onFinish:function(){
-				goToStep2(targetStep);
-			}
-			}).play();
-	}
-	else{
-		goToStep2(targetStep);
-	}
-}
-function goToStep2(targetStep)
-{
 	overlayed = true;
 	overlay.remove();
 	overlay = getNewOverlay(overlaySteps[targetStep]);
@@ -152,22 +129,54 @@ function goToStep2(targetStep)
 		node: overlay, 
 		duration: 0.5,
 		opacity: 0.5,
-		}).play();
+		onFinish:function(){
+			audioSteps[targetStep].play();
+		}
+	}).play();
+}
+
+function stopStep()
+{
+	if(current_step < 0)
+		return;
+	
+	audioSteps[current_step].pause();
+	if(overlayed){
+		new Kinetic.Tween({
+			node: overlay, 
+			duration: 0.5,
+			opacity: 0
+			}).play();
+		overlayed = false;
+	}
 }
 
 
 function onStageClicked(){
 
-	goToStep(current_step);
-	
+	stopStep();
+	goToStep(current_step + 1);
+
 	current_step += 1;
+
+}
+
+
+function onStepFinished(){
+
+	/*clearOverlay();
+	
+	if(current_step < overlaySteps.length)
+		current_step += 1;
+	if(current_step < overlaySteps.length)
+		goToNextStep();*/
 }
 
 
 
-document.getElementById('tango').addEventListener('click', function() {
-	tango(layer);
-}, false);
+
+
+
 
 /*var menu_width = 200;
 var color_value = 0;
