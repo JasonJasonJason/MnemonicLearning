@@ -1,8 +1,10 @@
 var menu_width = 200;
 var color_value  = 0;
+var button_height = 40;
 var overlaySteps  = new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
 var audioFileNames= new Array('audio/1.wav', 'audio/2.wav', 'audio/3.wav');
 var audioSteps    = new Array()
+var menuButtons   = new Array()
 var current_step  = -1;
 var overlay;
 var overlayed = false;
@@ -35,11 +37,16 @@ function init(){
 	layer.add(background);
 	overlay = getNewOverlay([100,150,Math.random() * 200 + 100,100]);
 	layer.add(overlay);
+
+	initMenu();
+
 	stage.add(layer);
 	stage.on('click', function(e)
 	{
 		onStageClicked();
 	});
+
+	
 }
 
 function initAudio(){
@@ -49,6 +56,29 @@ function initAudio(){
 		audioSteps[i].addEventListener('ended', function(e){
 			onStepFinished();
 		});
+	}
+}
+
+
+function initMenu()
+{
+
+	for(i=0; i<overlaySteps.length; i++)
+	{
+		menuButtons[i] = new Kinetic.Rect({
+			x: 0,
+	        y: i*button_height,
+	        width: menu_width,
+	        height: button_height-1,
+	        fill:'black'
+		});
+
+		menuButtons[i].on('click', function(){
+			goToStep(1);
+			current_step = 0;
+		});
+		layer.add(menuButtons[i]);
+		
 	}
 }
 
@@ -124,19 +154,30 @@ function goToStep(targetStep){
 	if(current_step >= 0)
 		audioSteps[current_step].pause();
 	if(overlayed){
-		new Kinetic.Tween({
-			node: overlay, 
-			duration: 0.5,
-			opacity: 0,
-			onFinish: function(){
-				goToStep2(targetStep);
-			}
-			}).play();
-		overlayed = false;
+		stopStep(function(){
+			goToStep2(targetStep);
+		});
 	}
 	else{
 		goToStep2(targetStep);
 	}
+}
+
+function stopStep(onFinishFunction){
+
+	if(overlayed)
+	{
+		new Kinetic.Tween({
+			node: overlay, 
+			duration: 0.5,
+			opacity: 0,
+			onFinish: onFinishFunction
+			}).play();
+	}
+	else
+		onFinishFunction();
+
+	overlayed = false;
 }
 
 function goToStep2(targetStep){
@@ -165,12 +206,17 @@ function goToNextStep(){
 
 function onStageClicked(){
 
-	goToNextStep();
+	//goToNextStep();
 }
 
 
 function onStepFinished(){
 
+	if(current_step == overlaySteps.length - 1)
+	{
+		stopStep();
+		return;
+	}
 	goToNextStep();
 }
 
