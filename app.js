@@ -2,16 +2,18 @@ var menu_width = 200;
 var color_value = 0;
 var video_step = 0;
 var overlaySteps=new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
+var snd;
 
 window.onload=function(){
 
-	draw();
-	
+	init();
 };
 
 
-function draw() {
+function init() {
 
+	initAudio();
+	
     var canvas = document.getElementById("appLayer");
     var overlay = document.getElementById("overlayLayer");
     overlay.addEventListener('click', function(e)
@@ -39,6 +41,11 @@ function draw() {
 			drawMenu(appCtx);
 		};
     }
+}
+
+function initAudio(){
+
+	snd = new Audio('audio/sound.wav');
 }
 
 
@@ -103,12 +110,17 @@ function clearOverlay(){
 
 function onCanvasClicked(e){
 
-	clearOverlay();
 	video_step += 1;
-	highlightNextArea();
-
-	var snd = new Audio("audio/sound.wav");
-	snd.play();
+	if(video_step % 2 == 0)
+	{
+		highlightNextArea();
+		snd.play();
+	}
+	else
+	{
+		clearOverlay();
+		snd.pause();
+	}
 }
 
 
