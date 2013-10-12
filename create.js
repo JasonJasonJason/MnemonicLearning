@@ -11,12 +11,14 @@ var stageWidth;
 var stageHeight;
 var fontSize = 16;
 var img;
+var addStepButton;
 
 var clickX = 0;
 var clickY = 0;
 var previousClickX = 0;
 var previousClickY = 0;
 var background;
+
 
 
 var layer = new Kinetic.Layer();
@@ -41,7 +43,7 @@ function handleImage(e){
 
 function init(){
 
-	stageWidth = img.width + 200;
+	stageWidth = img.width + menu_width;
 	stageHeight = img.height;
 	stage = new Kinetic.Stage({
 		container: 'container',
@@ -50,17 +52,26 @@ function init(){
 	});
 
 	background = new Kinetic.Image({
+		x:menu_width,
 		image:img
 	});
 	
-	overlay = getNewOverlay([0,0,100, 100]);
+	overlay = getNewOverlay([0,0,stageWidth, stageHeight]);
 
 	layer.add(background);
 	layer.add(overlay);
+	layer.x = 200;
 	stage.add(layer);
+	
 
+	stage.draw();
 	stage.on('mousedown', onImageDown);
 
+	initMenu();
+}
+
+
+function initMenu(){
 	
 }
 
@@ -78,11 +89,11 @@ function redrawOverlay(x, y, width, height){
 		height = -height;
 		y -= height;
 	}
+	overlaySteps[current_step] = new Array();
 	overlaySteps[current_step][0] = x;
 	overlaySteps[current_step][1] = y;
 	overlaySteps[current_step][2] = width;
 	overlaySteps[current_step][3] = height;
-
 	overlay = getNewOverlay([x, y, width, height]);
 	layer.add(overlay);
 	stage.draw();
@@ -98,14 +109,14 @@ function getNewOverlay(highlightArea)
 
 	var rect = new Kinetic.Group(
 		{
-			x:0,
+			x:menu_width,
 			opacity:0.5
 		});
 
 	var top = new Kinetic.Rect({
         x: 0,
         y: 0,
-        width: stageWidth-menu_width,
+        width: stageWidth,
         height: area_y,
         fill:'black'
       });
@@ -149,10 +160,9 @@ function getNewOverlay(highlightArea)
 
 function onImageDown(e){
 
-
-	clickX = e.clientX;
+	clickX = e.clientX - menu_width;
 	clickY = e.clientY;
-	previousClickX = e.clientX;
+	previousClickX = e.clientX - menu_width;
 	previousClickY = e.clientY;
 
 	redrawOverlay(clickX, clickY, previousClickX-clickX, previousClickY-clickY);
@@ -162,7 +172,7 @@ function onImageDown(e){
 }
 function onImageMove(e){
 
-	previousClickX = e.clientX;
+	previousClickX = e.clientX - menu_width;
 	previousClickY = e.clientY;
 	redrawOverlay(clickX, clickY, previousClickX-clickX, previousClickY-clickY);
 }
