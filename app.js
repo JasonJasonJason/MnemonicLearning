@@ -12,6 +12,8 @@ var stage;
 var stageWidth;
 var stageHeight;
 var fontSize = 16;
+var playButton;
+var pauseButton;
 
 
 function init(){
@@ -73,7 +75,7 @@ function initMenu()
 		        y: i*button_height,
 		        width: menu_width,
 		        height: button_height-1,
-		        fill:'black'
+		        fill:'#444444'
 			});
 
 			menuButtons[i].on('click', function(e){
@@ -97,6 +99,68 @@ function initMenu()
 			layer.add(menuButtons[i]);
 		}(i));
 	}
+
+	//Play button
+	playButton = new Kinetic.Group({
+		x:0,
+		y:stageHeight - button_height
+	});
+	playButton.on('click', function(e){
+		onPlayPressed();
+	});
+
+	var rect = new Kinetic.Rect({
+		x: 0,
+        y: 0,
+        width: menu_width/2,
+        height: button_height-1,
+        fill:'#444444'
+	});
+
+	var text = new Kinetic.Text({
+		x:0,
+		y:fontSize/2 + 3,
+		text: 'Play',
+		fontSize: fontSize,
+		fontFamily: 'sans-serif',
+		fill: 'white',
+		width:menu_width/2,
+		align: 'center'
+	});
+	playButton.add(rect);
+	playButton.add(text);
+	layer.add(playButton);
+
+	//Pause button
+	pauseButton = new Kinetic.Group({
+		x:menu_width/2 + 1,
+		y:stageHeight - button_height
+	});
+	pauseButton.on('click', function(e){
+		onPausePressed();
+	});
+
+	var rect = new Kinetic.Rect({
+		x: 0,
+        y: 0,
+        width: menu_width/2,
+        height: button_height-1,
+        fill:'#444444'
+	});
+
+	var text = new Kinetic.Text({
+		x:0,
+		y:fontSize/2 + 3,
+		text: 'Pause',
+		fontSize: fontSize,
+		fontFamily: 'sans-serif',
+		fill: 'white',
+		width:menu_width/2,
+		align: 'center'
+	});
+	pauseButton.add(rect);
+	pauseButton.add(text);
+	layer.add(pauseButton);
 }
 
 function highlightCurrentArea()
@@ -166,7 +230,47 @@ function getNewOverlay(highlightArea)
 }
 
 
+function pauseAllAudio(){
+
+	for(i=0; i<audioSteps.length; i++)
+	{
+		audioSteps[i].pause();
+	}
+}
+
+
+function pause(){
+
+	pauseAllAudio();
+
+}
+
+
+function onPlayPressed(){
+
+	goToStep(current_step);
+}
+
+
+function onPausePressed(){
+
+	pause();
+}
+
+
 function goToStep(targetStep){
+
+	if(targetStep == -1)
+		targetStep = 0;
+
+	if(targetStep == current_step)
+	{
+		
+		audioSteps[current_step].play();
+		return;
+	}
+
+	
 
 	for(i=0; i<audioSteps.length; i++)
 	{
@@ -221,7 +325,7 @@ function goToStep2(targetStep){
 
 function goToNextStep(){
 
-	goToStep(current_step + 1);
+	goToStep(current_step+1);
 	
 }
 
@@ -237,6 +341,7 @@ function onStepFinished(){
 	if(current_step == overlaySteps.length - 1)
 	{
 		stopStep();
+		current_step = -1;
 		return;
 	}
 	goToNextStep();
@@ -246,281 +351,3 @@ function onStepFinished(){
 
 
 
-
-
-/*var menu_width = 200;
-var color_value = 0;
-var current_step = 0;
-var overlaySteps  = new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
-var audioFileNames= new Array('audio/1.wav', 'audio/2.wav', 'audio/3.wav');
-var audioSteps    = new Array()
-var snd;
-var overlayed = false;
-var button_height = 40;
-var playButtonCoordinates;
-var pauseButtonCoordinates;
-var overlayIntervalId;
-var darken_count;
-var lighten_count;
-
-window.onload=function(){
-
-	init();
-};
-
-
-function init() {
-
-	initAudio();
-	
-    var canvas = document.getElementById("appLayer");
-    var overlay = document.getElementById("overlayLayer");
-    overlay.addEventListener('click', function(e)
-    {
-    	onCanvasClicked(e);
-    });
-    if (canvas.getContext) {
-
-      	var img = new Image();
-      	img.src = 'img/sample.jpg';
-		img.onload = function(){
-
-			var appCtx = canvas.getContext("2d");
-
-			canvas.width = img.width + menu_width;
-	    	canvas.height = img.height;
-	    	overlay.width = canvas.width;
-	    	overlay.height = canvas.height;
-
-			appCtx.drawImage(img,menu_width-1,0);
-
-			drawMenu(overlay, appCtx);
-		};
-    }
-}
-
-function initAudio(){
-
-	for(i=0; i<audioFileNames.length; i+=1){
-		audioSteps[i] = new Audio(audioFileNames[i]);
-		audioSteps[i].addEventListener('ended', function(e){
-			onStepFinished();
-		});
-	}
-}
-
-
-function setFontStyle(context){
-	context.fillStyle = "#FFFFFF";
-	context.textBaseline = "middle";
-	context.textAlign = "center";
-	context.font = "16px sans-serif";
-}
-
-
-function drawMenu(overlay, context) {
-
-
-	for(i = 0; i<overlaySteps.length; i++)
-	{
-	    context.fillStyle = "#444444";
-		context.fillRect (0, i*button_height, menu_width,button_height-1);
-		context.fillStyle = "#AAAAAA";
-		context.fillRect (0, i*button_height - 1, menu_width,1);
-
-		setFontStyle(context);
-		context.fillText("Step "+i, menu_width/2, i*button_height + button_height/2);
-	}
-
-	playButtonCoordinates  = new Array(0, overlay.height - 40, menu_width/2, 40);
-	pauseButtonCoordinates = new Array(menu_width/2, overlay.height - 40, menu_width/2, 40);
-
-	context.fillStyle = "#444444";
-	context.fillRect (playButtonCoordinates[0], playButtonCoordinates[1], playButtonCoordinates[2], playButtonCoordinates[3]);
-	context.fillRect (pauseButtonCoordinates[0], pauseButtonCoordinates[1], pauseButtonCoordinates[2], pauseButtonCoordinates[3]);
-	context.fillStyle = "#FFFFFF";
-	context.fillRect (menu_width/2, overlay.height - 40, 1, 40);
-
-	context.fillText("Play", menu_width/4, overlay.height-button_height/2);
-	context.fillText("Pause", menu_width*3/4, overlay.height-button_height/2);
-}
-
-function highlightCurrentArea(){
-
-	overlayed = true;
-	darken_count = 0;
-
-	if(overlayIntervalId != null)
-		window.clearInterval(overlayIntervalId);
-	overlayIntervalId = window.setInterval(darken, 15);
-}
-
-
-function darken()
-{
-	darken_count += 1;
-	if(darken_count > 20)
-	{
-		window.clearInterval(overlayIntervalId);
-	}
-
-	var overlay = document.getElementById("overlayLayer");
-    if (overlay.getContext) {
-
-		nextArea = overlaySteps[current_step % overlaySteps.length];
-
-		area_x = nextArea[0];
-		area_y = nextArea[1];
-		area_width  = nextArea[2];
-		area_height = nextArea[3];
-
-		var context = overlay.getContext("2d");
-
-		//Draw entire overlay
-		context.fillStyle = "rgba(0, 0, 0, 0.06)";
-		context.fillRect(menu_width, 0, overlay.width - menu_width, overlay.height);
-
-		//Cut out the focus square
-		previousComposite = context.globalCompositeOperation;
-		context.globalCompositeOperation = "destination-out";
-		context.fillStyle = "rgb(255,255,255)";
-		context.fillRect(menu_width + area_x, area_y, area_width, area_height);
-		context.globalCompositeOperation = previousComposite;
-	}
-}
-
-function lighten(){
-
-	lighten_count += 1;
-	if(lighten_count > 20)
-	{
-		window.clearInterval(overlayIntervalId);
-	}
-
-	var overlay = document.getElementById("overlayLayer");
-    if (overlay.getContext) {
-
-    	var context = overlay.getContext("2d");
-
-    	//Cut out the focus square
-    	previousComposite = context.globalCompositeOperation;
-    	context.globalCompositeOperation = "destination-out";
-		context.fillStyle = "rgba(255,255,255, 0.1)";
-		context.fillRect(menu_width, 0, overlay.width-menu_width, overlay.height);
-		context.globalCompositeOperation = previousComposite;
-		overlayed = false;
-    }
-
-}
-
-
-function clearOverlay(){
-
-	lighten_count = 0;
-	if(overlayIntervalId != null)
-		window.clearInterval(overlayIntervalId);
-	overlayIntervalId = window.setInterval(lighten, 15);
-	overlayed = false;
-}
-
-
-function goToNextStep(){
-
-	highlightCurrentArea();
-	audioSteps[current_step].play();
-}
-
-
-function pauseCurrentStep(){
-
-	clearOverlay();
-	audioSteps[current_step].pause();
-}
-
-
-function stopPlayback(){
-
-	audioSteps[current_step].pause();
-	audioSteps[current_step].currentTime = 0;
-	clearOverlay();
-}
-
-
-function hitTest(x, y, coordinates){
-	return (x >= coordinates[0] && x <= coordinates[0] + coordinates[2] && y >=coordinates[1] && y <= coordinates[1]+coordinates[3]);
-}
-
-
-
-//Event Listeners
-
-
-
-function onCanvasClicked(e){
-
-	var x = e.clientX;
-	var y = e.clientY;
-
-	if(x <= menu_width)
-	{
-		if(y <= button_height*overlaySteps.length)
-		{
-			var buttonIndex = Math.floor(y/button_height);
-			stopPlayback();
-			current_step = buttonIndex;
-			goToNextStep();
-		}
-		else if(hitTest(x, y, playButtonCoordinates))
-			onPlayPressed();
-		else if(hitTest(x, y, pauseButtonCoordinates))
-			onPausePressed();
-	}
-	else
-	{
-		if(overlayed)
-		{
-			pauseCurrentStep();
-		}
-		else
-		{
-			goToNextStep();
-		}
-	}
-}
-
-
-function onStepFinished(){
-
-	clearOverlay();
-	
-	if(current_step < overlaySteps.length)
-		current_step += 1;
-	if(current_step < overlaySteps.length)
-		goToNextStep();
-}
-
-
-function onPlayPressed(){
-
-	clearOverlay();
-	highlightCurrentArea();
-	audioSteps[current_step].play();
-}
-
-
-function onPausePressed(){
-
-	clearOverlay();
-	audioSteps[current_step].pause();	
-}
-
-
-
-
-
-
-
-
-
-
-*/
