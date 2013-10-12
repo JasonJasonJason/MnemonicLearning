@@ -50,6 +50,9 @@ function initAudio(){
 
 	for(i=0; i<audioFileNames.length; i+=1){
 		audioSteps[i] = new Audio(audioFileNames[i]);
+		audioSteps[i].addEventListener('ended', function(e){
+			onStepFinished();
+		});
 	}
 }
 
@@ -60,8 +63,7 @@ function drawMenu(context) {
 	//context.fillRect (0, 0, 100,100);
 }
 
-function highlightNextArea(){
-
+function highlightCurrentArea(){
 
 	var overlay = document.getElementById("overlayLayer");
     if (overlay.getContext) {
@@ -85,6 +87,7 @@ function highlightNextArea(){
 		context.fillStyle = "rgb(255,255,255)";
 		context.fillRect(menu_width + area_x, area_y, area_width, area_height);
 		context.globalCompositeOperation = previousComposite;
+		overlayed = true;
     }
 
 }
@@ -103,8 +106,23 @@ function clearOverlay(){
 		context.fillStyle = "rgb(255,255,255)";
 		context.fillRect(menu_width, 0, overlay.width-menu_width, overlay.height);
 		context.globalCompositeOperation = previousComposite;
+		overlayed = false;
     }
 
+}
+
+
+function goToNextStep(){
+
+	highlightCurrentArea();
+	audioSteps[current_step].play();
+}
+
+
+function pauseCurrentStep(){
+
+	clearOverlay();
+	audioSteps[current_step].pause();
 }
 
 
@@ -117,17 +135,23 @@ function onCanvasClicked(e){
 
 	if(overlayed)
 	{
-		clearOverlay();
-		audioSteps[current_step].pause();
-		overlayed = false;
-		current_step += 1;
+		pauseCurrentStep();
 	}
 	else
 	{
-		highlightNextArea();
-		audioSteps[current_step].play();
-		overlayed = true;
+		goToNextStep();
 	}
+}
+
+
+function onStepFinished(){
+
+	clearOverlay();
+	
+	if(current_step < overlaySteps.length)
+		current_step += 1;
+	if(current_step < overlaySteps.length)
+		goToNextStep();
 }
 
 
