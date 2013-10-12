@@ -1,3 +1,5 @@
+var menu_width = 200;
+
 window.onload=function(){
 
 	draw();
@@ -7,12 +9,24 @@ window.onload=function(){
 function draw() {
       var canvas = document.getElementById("app");
       if (canvas.getContext) {
-        var ctx = canvas.getContext("2d");
 
-        ctx.fillStyle = "rgb(200,0,0)";
-        ctx.fillRect (10, 10, 55, 50);
 
-        ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-        ctx.fillRect (30, 30, 55, 50);
+      	var img = new Image();
+
+		img.onload = function(){
+
+			var ctx = canvas.getContext("2d");
+			canvas.width = img.width + menu_width;
+	    	canvas.height = document.body.clientHeight;
+
+	        ctx.fillStyle = "rgb(200,0,0)";
+	        ctx.fillRect (10, 10, canvas.width, canvas.height);
+
+	        ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+	        ctx.fillRect (30, 30, 55, 50);
+			ctx.drawImage(img,menu_width,0);
+		};
+		img.src = 'img/sample.jpg';
+
       }
     }
