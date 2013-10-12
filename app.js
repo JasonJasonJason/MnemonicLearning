@@ -1,4 +1,119 @@
 var menu_width = 200;
+var color_value  = 0;
+var current_step = 0;
+var overlaySteps  = new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
+var audioFileNames= new Array('audio/1.wav', 'audio/2.wav', 'audio/3.wav');
+var audioSteps    = new Array()
+var current_step  = 0;
+var overlay;
+var stage;
+
+
+function tango(layer) {
+	var color = Kinetic.Util.getRGB(getRandomColor());
+	  
+	for(var n = 0; n < layer.getChildren().length; n++) {
+		var shape = layer.getChildren()[n];
+		var stage = shape.getStage();
+		var radius = Math.random() * 100 + 20;
+
+		new Kinetic.Tween({
+		node: shape, 
+		duration: 1,
+		x: Math.random() * stage.getWidth(), 
+		y: Math.random() * stage.getHeight(), 
+		rotation: Math.random() * Math.PI * 2, 
+		radius: radius,
+		opacity: (radius - 20) / 100,
+		easing: Kinetic.Easings.EaseInOut,
+		fillR: color.r,
+		fillG: color.g,
+		fillB: color.b
+		}).play();
+	}
+}
+
+function highlightCurrentArea()
+{
+
+}
+
+var layer = new Kinetic.Layer();
+var img = new Image();
+img.src = 'img/sample.jpg';
+img.onload = function(){
+
+	stage = new Kinetic.Stage({
+		container: 'container',
+		width: img.width + 200,
+		height: img.height
+	});
+
+	
+	var background = new Kinetic.Image({
+		x: 200,
+		y: 0,
+		image: img,
+		width: img.width,
+		height: img.height
+	});
+
+	layer.add(background);
+
+	overlay = getNewOverlay([100,150,200,100]);
+	overlay.x = 200;
+	layer.add(overlay);
+	stage.add(layer);
+
+	stage.on('click', function(e)
+	{
+		onStageClicked();
+	});
+	
+};
+
+
+function getNewOverlay(highlightArea)
+{
+	var area_x = highlightArea[0];
+	var area_y = highlightArea[1];
+	var area_width = highlightArea[2];
+	var area_height = highlightArea[3];
+
+	var rect = new Kinetic.Group(
+		{
+			opacity:0
+		});
+
+	var top = new Kinetic.Rect({
+        x: area_x,
+        y: area_y,
+        width: area_width,
+        height: area_height,
+        fill:'black'
+      });
+
+	rect.add(top);
+	return rect;
+}
+
+
+function onStageClicked(){
+
+	new Kinetic.Tween({
+		node: overlay, 
+		duration: 0.5,
+		opacity: 0.5,
+		}).play();
+}
+
+
+
+document.getElementById('tango').addEventListener('click', function() {
+	tango(layer);
+}, false);
+
+/*var menu_width = 200;
 var color_value = 0;
 var current_step = 0;
 var overlaySteps  = new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
@@ -99,6 +214,9 @@ function highlightCurrentArea(){
 
 	overlayed = true;
 	darken_count = 0;
+
+	if(overlayIntervalId != null)
+		window.clearInterval(overlayIntervalId);
 	overlayIntervalId = window.setInterval(darken, 15);
 }
 
@@ -136,7 +254,7 @@ function darken()
 	}
 }
 
-/*function lighten(){
+function lighten(){
 
 	lighten_count += 1;
 	if(lighten_count > 20)
@@ -152,31 +270,22 @@ function darken()
     	//Cut out the focus square
     	previousComposite = context.globalCompositeOperation;
     	context.globalCompositeOperation = "destination-out";
-		context.fillStyle = "rgb(255,255,255)";
+		context.fillStyle = "rgba(255,255,255, 0.1)";
 		context.fillRect(menu_width, 0, overlay.width-menu_width, overlay.height);
 		context.globalCompositeOperation = previousComposite;
 		overlayed = false;
     }
 
 }
-*/
+
 
 function clearOverlay(){
 
-	var overlay = document.getElementById("overlayLayer");
-    if (overlay.getContext) {
-
-    	var context = overlay.getContext("2d");
-
-    	//Cut out the focus square
-    	previousComposite = context.globalCompositeOperation;
-    	context.globalCompositeOperation = "destination-out";
-		context.fillStyle = "rgb(255,255,255)";
-		context.fillRect(menu_width, 0, overlay.width-menu_width, overlay.height);
-		context.globalCompositeOperation = previousComposite;
-		overlayed = false;
-    }
-
+	lighten_count = 0;
+	if(overlayIntervalId != null)
+		window.clearInterval(overlayIntervalId);
+	overlayIntervalId = window.setInterval(lighten, 15);
+	overlayed = false;
 }
 
 
@@ -279,3 +388,4 @@ function onPausePressed(){
 
 
 
+*/
