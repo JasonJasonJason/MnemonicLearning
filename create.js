@@ -41,11 +41,13 @@ var imageLoader = document.getElementById('imageLoader');
     imageLoader.addEventListener('change', handleImage, false);
 
 function handleImage(e){
+
+	step2clicked();
     var reader = new FileReader();
     reader.onload = function(event){
+    	
         img = new Image();
         img.onload = function(){
-        	
         	init();
         }
         img.src = event.target.result;
@@ -93,11 +95,12 @@ function initMenu(){
 				overlaySteps[i] = new Array();
 
 				var rect = new Kinetic.Rect({
-					x: 0,
-			        y: i*button_height,
-			        width: menu_width,
+					x: 1,
+			        y: 1 + i*button_height,
+			        width: menu_width-2,
 			        height: button_height-1,
-			        fill:'#444444'
+			        fill:'#444444',
+			        cornerRadius:4
 				});
 
 				menuButtons[i].on('click', function(e){
@@ -239,10 +242,10 @@ function onImageDown(e){
 	if(e.clientX < menu_width)
 		return;
 
-	clickX = e.clientX - menu_width;
-	clickY = e.clientY;
-	previousClickX = e.clientX - menu_width;
-	previousClickY = e.clientY;
+	clickX = stage.getMousePosition().x - menu_width;
+	clickY = stage.getMousePosition().y;
+	previousClickX = stage.getMousePosition().x - menu_width;
+	previousClickY = stage.getMousePosition().y;
 
 	redrawOverlay(clickX, clickY, previousClickX-clickX, previousClickY-clickY);
 	
@@ -251,8 +254,8 @@ function onImageDown(e){
 }
 function onImageMove(e){
 
-	previousClickX = e.clientX - menu_width;
-	previousClickY = e.clientY;
+	previousClickX = stage.getMousePosition().x - menu_width;
+	previousClickY = stage.getMousePosition().y;
 	redrawOverlay(clickX, clickY, previousClickX-clickX, previousClickY-clickY);
 }
 function onImageUp(e){
@@ -261,6 +264,17 @@ function onImageUp(e){
 	stage.off('mouseup', onImageUp);
 }
 
+function step1clicked(){
+	document.getElementById('step1').style.visibility = 'hidden';
+	document.getElementById('step1').innerHTML = '';
+	document.getElementById('step2').style.visibility = 'visible';
+}
+function step2clicked(){
+
+	document.getElementById('step2').style.visibility = 'hidden';
+	document.getElementById('step2').innerHTML = '';
+	document.getElementById('step3').style.visibility = 'visible';	
+}
 
 
 

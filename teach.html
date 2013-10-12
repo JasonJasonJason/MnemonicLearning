@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+      canvas {
+        border: 1px solid #9C9898;
+      }
+      #tango {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 10px;
+      }
+      #container {
+        display: inline-block;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body onmousedown="return false;">
+    <div id="step3" style="visibility:hidden;">
+      <h5>Upload your audio one file at a time, in sqeuential order</h5>
+      <input type="file" id="audioLoader" name="audioLoader"/>
+    </div>
+    <div id="container"></div>
+
+    <br />
+    <div id="step1" class="span6 offset3 well">
+      <h2>Teaching with Visual Mnemonics</h2>
+      <p>The idea is simple. Add a memorable image through the image uploader, and add audio to explain different parts of the image.</p>
+      <p>Click on each step and highlight a section of the image to highlight while that audio is playing.</p>
+      <p>The audio will be played sequentially to the user, while highlighting parts of the image.</p>
+      <button class="btn-success" onclick="step1clicked();">Let's Begin!</button>
+    </div>
+
+    <div id="step2" class="span6 offset3 well" style="visibility:hidden;">
+      <h2>Upload an Image</h2>
+      <input type="file" id="imageLoader" name="imageLoader"/>
+    </div>
+
+    
+
+    <script src="kinetic.min.js"></script>
+    <script src="create.js"></script>
+  </body>
+</html>

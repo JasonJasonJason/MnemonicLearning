@@ -2,7 +2,7 @@ body {
 	text-align: center;
 	background-color:#EECD86;
 	color:#B95835;
-	
+	padding-left:0px;
 }
 
 .appContainer {
@@ -16,3 +16,26 @@ body {
 	z-index: 1;
 	position:absolute;
 }
+
+#step1 {
+	font-size:17px;
+}
+#step1 p{
+	margin-top:20px;
+}
+#step1 button {
+	margin-top:15px;
+}
+
+#container {
+	maring-left:0px;
+	padding-left:0px;
+	text-align:left;
+	display:inherit;
+	margin-top:20px;
+}
+canvas {
+	display:inherit;
+	float:left;
+}
+

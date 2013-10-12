@@ -348,6 +348,8 @@ function onStepFinished(){
 }
 
 
-
+function step1Clicked(){
+	
+}
 
 
