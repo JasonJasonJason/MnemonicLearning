@@ -19,9 +19,30 @@ var previousClickX = 0;
 var previousClickY = 0;
 var background;
 
-
-
 var layer = new Kinetic.Layer();
+
+var audioLoader = document.getElementById('audioLoader');
+    audioLoader.addEventListener('change', handleAudio, false);
+
+function handleAudio(e){
+
+	for(i=0; i<e.target.files.length; i+=1)
+	{
+		file = e.target.files[i];
+		(function(file){
+			var reader = new FileReader();
+		    reader.onload = function(event){
+		        var audio = new Audio();
+		        audio.src = event.target.result;
+		        audioSteps[audioSteps.length] = audio;
+		    };
+		    reader.readAsDataURL(e.target.files[i]);     
+		}(file));
+	}
+
+	window.setTimeout(initMenu, 250);
+}
+
 
 var imageLoader = document.getElementById('imageLoader');
     imageLoader.addEventListener('change', handleImage, false);
@@ -72,7 +93,46 @@ function init(){
 
 
 function initMenu(){
-	
+
+	alert('number of audio steps: ' + audioSteps.length);
+
+	for(i=0; i<audioSteps.length; i++)
+	{
+		(function(i){
+			menuButtons[i] = new Kinetic.Group();
+
+			var rect = new Kinetic.Rect({
+				x: 0,
+		        y: i*button_height,
+		        width: menu_width,
+		        height: button_height-1,
+		        fill:'#444444'
+			});
+
+			menuButtons[i].on('click', function(e){
+				//goToStep(i);
+				audioSteps[i].play();
+			});
+
+			var text = new Kinetic.Text({
+				x:0,
+				y:i*button_height + fontSize/2 + 3,
+				text: 'Play 1',
+				fontSize: fontSize,
+				fontFamily: 'sans-serif',
+				fill: 'white',
+				width:menu_width,
+				align: 'center'
+			});
+
+			menuButtons[i].add(rect);
+			menuButtons[i].add(text);
+
+			layer.add(menuButtons[i]);
+			alert('adding a menu button');
+		}(i));
+	}
+	stage.draw();
 }
 
 

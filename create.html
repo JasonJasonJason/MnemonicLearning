@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html>
   <head>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
     <style>
       body {
         margin: 0px;
@@ -22,15 +23,16 @@
     </style>
   </head>
   <body onmousedown="return false;">
-
     <div id="container"></div>
+      <div class="well">
+        <h2>image</h2>
+        <input type="file" id="imageLoader" name="imageLoader"/>
+      </div>
     <div>
-      <p>image</p>
-      <input type="file" id="imageLoader" name="imageLoader"/>
-    </div>
-    <div>
-      <p>Audio</p>
-      <input type="file" id="audioLoader" name="audioLoader"/>
+      <div class="well">
+        <h2>Audio</h2>
+        <input multiple type="file" id="audioLoader" name="audioLoader"/>
+      </div>
     </div>
     <script src="kinetic.min.js"></script>
     <script src="create.js"></script>
