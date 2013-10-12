@@ -55,18 +55,18 @@ function highlightNextArea(){
     	area_y = 100;
     	area_width = 100;
     	area_height = 100;
-    	area_bottom_y = area_y + area_height;
-    	area_right_x = area_x + area_width;
 
     	var context = overlay.getContext("2d");
 
+    	//Draw entire overlay
     	context.fillStyle = "rgba(0, 0, 0, 0.5)";
-    	
     	context.fillRect(menu_width, 0, overlay.width - menu_width, overlay.height);
 
+    	//Cut out the focus square
     	context.globalCompositeOperation = "destination-out";
-		context.strokeStyle = "rgb(255,255,255)";
+		context.fillStyle = "rgb(255,255,255)";
 		context.fillRect(menu_width + area_x, area_y, area_width, area_height);
+		
     }
 
 }
