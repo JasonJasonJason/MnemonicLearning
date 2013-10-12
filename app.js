@@ -63,17 +63,13 @@ img.onload = function(){
 	});
 
 	layer.add(background);
-
-	overlay = getNewOverlay([100,150,200,100]);
-	
+	overlay = getNewOverlay([100,150,Math.random() * 200 + 100,100]);
 	layer.add(overlay);
 	stage.add(layer);
-
 	stage.on('click', function(e)
 	{
 		onStageClicked();
 	});
-	
 };
 
 
@@ -132,6 +128,9 @@ function getNewOverlay(highlightArea)
 
 function onStageClicked(){
 
+	overlay.remove();
+	overlay = getNewOverlay([100,150,Math.random() * 200 + 100,100]);
+	layer.add(overlay);
 	new Kinetic.Tween({
 		node: overlay, 
 		duration: 0.5,
