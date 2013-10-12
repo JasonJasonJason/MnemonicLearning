@@ -5,6 +5,8 @@ var overlaySteps  = new Array([0, 0, -1, -1], [525,75,75,110],[280,120,100,170],
 	,[415, 85, 115, 65], [90, 30, 135, 100], [100, 160, 125, 160]);
 var audioFileNames= new Array('audio/learn/0.mp3', 'audio/learn/1.mp3', 'audio/learn/2.mp3', 'audio/learn/3.mp3',
 	'audio/learn/4.mp3', 'audio/learn/5.mp3', 'audio/learn/6.mp3');
+var stepTitles = new Array('Intro', 'Prison-Cell Wall', 'Cyto-Skeleton', 'The Gold Glob Golgi', 
+	'Lice-osomes', 'The E.R.', 'Vacuum-ole');
 var audioSteps    = new Array()
 var menuButtons   = new Array()
 var current_step  = -1;
@@ -88,7 +90,7 @@ function initMenu()
 			var text = new Kinetic.Text({
 				x:0,
 				y:i*button_height + fontSize/2 + 3,
-				text: 'Step '+(i+1),
+				text: stepTitles[i],
 				fontSize: fontSize,
 				fontFamily: 'sans-serif',
 				fill: 'white',
@@ -168,10 +170,6 @@ function initMenu()
 	layer.add(pauseButton);
 }
 
-function highlightCurrentArea()
-{
-
-}
 
 var layer = new Kinetic.Layer();
 var img = new Image();

@@ -12,6 +12,7 @@ var stageHeight;
 var fontSize = 16;
 var img;
 var addStepButton;
+var debugText;
 
 var clickX = 0;
 var clickY = 0;
@@ -77,10 +78,25 @@ function init(){
 	layer.add(background);
 	layer.add(overlay);
 	layer.x = 200;
+
+	debugText = new Kinetic.Text({
+		x:140,
+		y:20,
+		text: 'fds',
+		fontSize: fontSize,
+		fontFamily: 'sans-serif',
+		fill: 'black',
+		width:menu_width,
+		align: 'center'
+	});
+	layer.add(debugText);
 	stage.add(layer);
 	
 	stage.draw();
 	stage.on('mousedown', onImageDown);
+
+	
+
 }
 
 
@@ -167,11 +183,13 @@ function redrawOverlay(x, y, width, height){
 		height = -height;
 		y -= height;
 	}
+
 	overlaySteps[current_step] = new Array();
 	overlaySteps[current_step][0] = x;
 	overlaySteps[current_step][1] = y;
 	overlaySteps[current_step][2] = width;
 	overlaySteps[current_step][3] = height;
+
 	overlay = getNewOverlay([x, y, width, height]);
 	layer.add(overlay);
 	stage.draw();
@@ -247,7 +265,7 @@ function onImageDown(e){
 	previousClickX = stage.getMousePosition().x - menu_width;
 	previousClickY = stage.getMousePosition().y;
 
-	redrawOverlay(clickX, clickY, previousClickX-clickX, previousClickY-clickY);
+	//redrawOverlay(clickX, clickY, previousClickX-clickX, previousClickY-clickY);
 	
 	stage.on('mousemove', onImageMove);
 	stage.on('mouseup', onImageUp);
