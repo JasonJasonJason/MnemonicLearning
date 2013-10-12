@@ -19,12 +19,16 @@ body {
 
 #step1 {
 	font-size:17px;
+	margin-top:-95px;
 }
 #step1 p{
 	margin-top:20px;
 }
 #step1 button {
 	margin-top:15px;
+}
+#step2 {
+	margin-top:-105px;
 }
 
 #container {
