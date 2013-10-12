@@ -7,6 +7,8 @@ var audioSteps    = new Array()
 var current_step  = 0;
 var overlay;
 var stage;
+var stageWidth;
+var stageHeight;
 
 
 function tango(layer) {
@@ -43,10 +45,12 @@ var img = new Image();
 img.src = 'img/sample.jpg';
 img.onload = function(){
 
+	stageWidth = img.width + 200;
+	stageHeight = img.height;
 	stage = new Kinetic.Stage({
 		container: 'container',
-		width: img.width + 200,
-		height: img.height
+		width: stageWidth,
+		height: stageHeight
 	});
 
 	
@@ -61,7 +65,7 @@ img.onload = function(){
 	layer.add(background);
 
 	overlay = getNewOverlay([100,150,200,100]);
-	overlay.x = 200;
+	
 	layer.add(overlay);
 	stage.add(layer);
 
@@ -82,18 +86,46 @@ function getNewOverlay(highlightArea)
 
 	var rect = new Kinetic.Group(
 		{
+			x:menu_width,
 			opacity:0
 		});
 
 	var top = new Kinetic.Rect({
-        x: area_x,
+        x: 0,
+        y: 0,
+        width: stageWidth,
+        height: area_y,
+        fill:'black'
+      });
+
+	var left = new Kinetic.Rect({
+        x: 0,
         y: area_y,
-        width: area_width,
+        width: area_x,
         height: area_height,
         fill:'black'
       });
 
+	var right = new Kinetic.Rect({
+        x: area_x + area_width,
+        y: area_y,
+        width: stageWidth - menu_width - area_x - area_width,
+        height: area_height,
+        fill:'black'
+      });
+
+	var bottom = new Kinetic.Rect({
+        x: 0,
+        y: area_y + area_height,
+        width: stageWidth - menu_width,
+        height: stageHeight - area_y - area_height,
+        fill:'black'
+      });
+
 	rect.add(top);
+	rect.add(left);
+	rect.add(right);
+	rect.add(bottom);
 	return rect;
 }
 
