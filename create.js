@@ -16,6 +16,12 @@ var playButton;
 var pauseButton;
 var img;
 
+var clickX;
+var clickY;
+var previousClickX;
+var previousClickY;
+var background;
+
 
 
 var layer = new Kinetic.Layer();
@@ -47,28 +53,113 @@ function init(){
 		height: stageHeight
 	});
 
-	var k_img = new Kinetic.Image({
+	background = new Kinetic.Image({
 		image:img
 	});
 	
-	layer.add(k_img);
+	overlay = getNewOverlay([0,0,stage.height, stage.width]);
+
+	layer.add(background);
+	redrawOverlay();
 	stage.add(layer);
 
-	k_img.on('click', onImageClicked);
+	background.on('mousedown', onImageDown);
 }
+
+
+function redrawOverlay(){
+
+	overlay.remove();
+	//overlay = getNewOverlay(clickX, clickY, previousClickX-clickX, previousClickY-clickY);
+	overlay = getNewOverlay([0,0,200,200]);
+	
+	layer.add(overlay);
+	
+
+}
+
+
+function getNewOverlay(highlightArea)
+{
+	var area_x = highlightArea[0];
+	var area_y = highlightArea[1];
+	var area_width = highlightArea[2];
+	var area_height = highlightArea[3];
+
+	var rect = new Kinetic.Group(
+		{
+			x:menu_width,
+			opacity:1
+		});
+
+	var top = new Kinetic.Rect({
+        x: 0,
+        y: 0,
+        width: stageWidth,
+        height: area_y,
+        fill:'black'
+      });
+
+	var left = new Kinetic.Rect({
+        x: 0,
+        y: area_y,
+        width: area_x,
+        height: area_height,
+        fill:'black'
+      });
+
+	var right = new Kinetic.Rect({
+        x: area_x + area_width,
+        y: area_y,
+        width: stageWidth - menu_width - area_x - area_width,
+        height: area_height,
+        fill:'black'
+      });
+
+	var bottom = new Kinetic.Rect({
+        x: 0,
+        y: area_y + area_height,
+        width: stageWidth - menu_width,
+        height: stageHeight - area_y - area_height,
+        fill:'black'
+      });
+
+	rect.add(top);
+	rect.add(left);
+	rect.add(right);
+	rect.add(bottom);
+	return rect;
+}
+
 
 
 //Event Listeners
 
 
 
-function onImageClicked(e){
-	var clickX = e.clientX;
-	var clickY = e.clientY;
+function onImageDown(e){
 
-	alert('x: '+clickX + ' y: '+clickY);
+	clickX = e.clientX;
+	clickY = e.clientY;
+	previousClickX = e.clientX;
+	previousClickY = e.clientY;
+
+	redrawOverlay();
+	
+
+	background.on('mousemove', onImageMove);
+	background.on('mouseup', onImageUp);
 }
+function onImageMove(e){
 
+
+	previousClickX = e.clientX;
+	previousClickY = e.clientY;
+	redrawOverlay();
+}
+function onImageUp(e){
+	
+}
 
 
 
