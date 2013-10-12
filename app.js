@@ -11,6 +11,7 @@ var overlayed = false;
 var stage;
 var stageWidth;
 var stageHeight;
+var fontSize = 16;
 
 
 function init(){
@@ -65,7 +66,9 @@ function initMenu()
 	for(i=0; i<overlaySteps.length; i++)
 	{
 		(function(i){
-			menuButtons[i] = new Kinetic.Rect({
+			menuButtons[i] = new Kinetic.Group();
+
+			var rect = new Kinetic.Rect({
 				x: 0,
 		        y: i*button_height,
 		        width: menu_width,
@@ -76,6 +79,20 @@ function initMenu()
 			menuButtons[i].on('click', function(e){
 				goToStep(i);
 			});
+
+			var text = new Kinetic.Text({
+				x:0,
+				y:i*button_height + fontSize/2 + 3,
+				text: 'Play 1',
+				fontSize: fontSize,
+				fontFamily: 'sans-serif',
+				fill: 'white',
+				width:menu_width,
+				align: 'center'
+			});
+
+			menuButtons[i].add(rect);
+			menuButtons[i].add(text);
 
 			layer.add(menuButtons[i]);
 		}(i));
