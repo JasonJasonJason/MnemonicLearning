@@ -1,11 +1,11 @@
 var menu_width = 200;
 var color_value  = 0;
-var current_step = 0;
 var overlaySteps  = new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
 var audioFileNames= new Array('audio/1.wav', 'audio/2.wav', 'audio/3.wav');
 var audioSteps    = new Array()
 var current_step  = 0;
 var overlay;
+var overlayed = false;
 var stage;
 var stageWidth;
 var stageHeight;
@@ -126,16 +126,41 @@ function getNewOverlay(highlightArea)
 }
 
 
-function onStageClicked(){
+function goToStep(targetStep){
 
+	if(overlayed){
+		new Kinetic.Tween({
+			node: overlay, 
+			duration: 0.5,
+			opacity: 0,
+			onFinish:function(){
+				goToStep2(targetStep);
+			}
+			}).play();
+	}
+	else{
+		goToStep2(targetStep);
+	}
+}
+function goToStep2(targetStep)
+{
+	overlayed = true;
 	overlay.remove();
-	overlay = getNewOverlay([100,150,Math.random() * 200 + 100,100]);
+	overlay = getNewOverlay(overlaySteps[targetStep]);
 	layer.add(overlay);
 	new Kinetic.Tween({
 		node: overlay, 
 		duration: 0.5,
 		opacity: 0.5,
 		}).play();
+}
+
+
+function onStageClicked(){
+
+	goToStep(current_step);
+	
+	current_step += 1;
 }
 
 
