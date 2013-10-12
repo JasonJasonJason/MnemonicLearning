@@ -62,23 +62,23 @@ function initAudio(){
 
 function initMenu()
 {
-
 	for(i=0; i<overlaySteps.length; i++)
 	{
-		menuButtons[i] = new Kinetic.Rect({
-			x: 0,
-	        y: i*button_height,
-	        width: menu_width,
-	        height: button_height-1,
-	        fill:'black'
-		});
+		(function(i){
+			menuButtons[i] = new Kinetic.Rect({
+				x: 0,
+		        y: i*button_height,
+		        width: menu_width,
+		        height: button_height-1,
+		        fill:'black'
+			});
 
-		menuButtons[i].on('click', function(){
-			goToStep(1);
-			current_step = 0;
-		});
-		layer.add(menuButtons[i]);
-		
+			menuButtons[i].on('click', function(e){
+				goToStep(i);
+			});
+
+			layer.add(menuButtons[i]);
+		}(i));
 	}
 }
 
@@ -151,8 +151,13 @@ function getNewOverlay(highlightArea)
 
 function goToStep(targetStep){
 
-	if(current_step >= 0)
-		audioSteps[current_step].pause();
+	for(i=0; i<audioSteps.length; i++)
+	{
+		audioSteps[i].pause();
+		audioSteps[i].currentTime = 0;
+	}
+
+	current_step = targetStep;
 	if(overlayed){
 		stopStep(function(){
 			goToStep2(targetStep);
@@ -200,7 +205,7 @@ function goToStep2(targetStep){
 function goToNextStep(){
 
 	goToStep(current_step + 1);
-	current_step += 1;
+	
 }
 
 
