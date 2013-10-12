@@ -12,7 +12,6 @@ var stageHeight;
 var fontSize = 16;
 var img;
 var addStepButton;
-var debugText;
 
 var clickX = 0;
 var clickY = 0;
@@ -79,17 +78,6 @@ function init(){
 	layer.add(overlay);
 	layer.x = 200;
 
-	debugText = new Kinetic.Text({
-		x:140,
-		y:20,
-		text: 'fds',
-		fontSize: fontSize,
-		fontFamily: 'sans-serif',
-		fill: 'black',
-		width:menu_width,
-		align: 'center'
-	});
-	layer.add(debugText);
 	stage.add(layer);
 	
 	stage.draw();
