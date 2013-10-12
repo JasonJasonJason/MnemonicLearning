@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+      canvas {
+        border: 1px solid #9C9898;
+      }
+      #tango {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 10px;
+      }
+      #container {
+        display: inline-block;
+        overflow: hidden;
+        
+      }
+    </style>
+  </head>
+  <body onmousedown="return false;">
+    
+    <div id="container"></div>
+    <input type="file" id="imageLoader" name="imageLoader"/>
+    <script src="kinetic.min.js"></script>
+    <script src="create.js"></script>
+  </body>
+</html>
