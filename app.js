@@ -6,6 +6,7 @@ var overlaySteps=new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
 window.onload=function(){
 
 	draw();
+	
 };
 
 
@@ -105,6 +106,9 @@ function onCanvasClicked(e){
 	clearOverlay();
 	video_step += 1;
 	highlightNextArea();
+
+	var snd = new Audio("audio/sound.wav");
+	snd.play();
 }
 
 
