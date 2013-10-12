@@ -1,8 +1,11 @@
 var menu_width = 200;
 var color_value = 0;
-var video_step = 0;
-var overlaySteps=new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
+var current_step = 0;
+var overlaySteps = new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
+var audioFileNames=new Array('audio/1.wav', 'audio/2.wav', 'audio/3.wav');
+var audioSteps   = new Array()
 var snd;
+var overlayed = false;
 
 window.onload=function(){
 
@@ -45,14 +48,16 @@ function init() {
 
 function initAudio(){
 
-	snd = new Audio('audio/sound.wav');
+	for(i=0; i<audioFileNames.length; i+=1){
+		audioSteps[i] = new Audio(audioFileNames[i]);
+	}
 }
 
 
 function drawMenu(context) {
 
-    context.fillStyle = "rgb(55,55,200)";
-	context.fillRect (0, 0, 100,100);
+    //context.fillStyle = "rgb(55,55,200)";
+	//context.fillRect (0, 0, 100,100);
 }
 
 function highlightNextArea(){
@@ -61,7 +66,7 @@ function highlightNextArea(){
 	var overlay = document.getElementById("overlayLayer");
     if (overlay.getContext) {
 
-    	nextArea = overlaySteps[video_step % overlaySteps.length];
+    	nextArea = overlaySteps[current_step % overlaySteps.length];
 
     	area_x = nextArea[0];
     	area_y = nextArea[1];
@@ -110,16 +115,18 @@ function clearOverlay(){
 
 function onCanvasClicked(e){
 
-	video_step += 1;
-	if(video_step % 2 == 0)
+	if(overlayed)
 	{
-		highlightNextArea();
-		snd.play();
+		clearOverlay();
+		audioSteps[current_step].pause();
+		overlayed = false;
+		current_step += 1;
 	}
 	else
 	{
-		clearOverlay();
-		snd.pause();
+		highlightNextArea();
+		audioSteps[current_step].play();
+		overlayed = true;
 	}
 }
 
