@@ -1,32 +1,95 @@
 var menu_width = 200;
+var color_value = 0;
+var video_step = 0;
 
 window.onload=function(){
 
 	draw();
 };
 
-//draw() Source = https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Canvas_tutorial/Basic_usage
-function draw() {
-      var canvas = document.getElementById("app");
-      if (canvas.getContext) {
 
+function draw() {
+
+    var canvas = document.getElementById("appLayer");
+    var overlay = document.getElementById("overlayLayer");
+    overlay.addEventListener('click', function(e)
+    {
+    	onCanvasClicked(e);
+    });
+    if (canvas.getContext) {
 
       	var img = new Image();
-
+      	img.src = 'img/sample.jpg';
 		img.onload = function(){
 
-			var ctx = canvas.getContext("2d");
+			var appCtx = canvas.getContext("2d");
+
 			canvas.width = img.width + menu_width;
-	    	canvas.height = document.body.clientHeight;
+	    	canvas.height = img.height;
+	    	overlay.width = canvas.width;
+	    	overlay.height = canvas.height;
 
-	        ctx.fillStyle = "rgb(200,0,0)";
-	        ctx.fillRect (10, 10, canvas.width, canvas.height);
+	        appCtx.fillStyle = "rgb(55,55,55)";
+	        appCtx.fillRect (0, 0, canvas.width, canvas.height);
 
-	        ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-	        ctx.fillRect (30, 30, 55, 50);
-			ctx.drawImage(img,menu_width,0);
+			appCtx.drawImage(img,menu_width,0);
+
+			drawMenu(appCtx);
 		};
-		img.src = 'img/sample.jpg';
-
-      }
     }
+}
+
+
+function drawMenu(context) {
+
+    context.fillStyle = "rgb(55,55,200)";
+	context.fillRect (0, 0, 100,100);
+}
+
+function highlightNextArea(){
+
+	var overlay = document.getElementById("overlayLayer");
+    if (overlay.getContext) {
+
+    	area_x = 100;
+    	area_y = 100;
+    	area_width = 100;
+    	area_height = 100;
+    	area_bottom_y = area_y + area_height;
+    	area_right_x = area_x + area_width;
+
+    	var context = overlay.getContext("2d");
+
+    	context.fillStyle = "rgba(0, 0, 0, 0.5)";
+    	
+    	context.fillRect(menu_width, 0, overlay.width - menu_width, overlay.height);
+
+    	context.globalCompositeOperation = "destination-out";
+		context.strokeStyle = "rgb(255,255,255)";
+		context.fillRect(menu_width + area_x, area_y, area_width, area_height);
+    }
+
+}
+
+
+
+//Event Listeners
+
+
+
+function onCanvasClicked(e){
+
+	video_step += 1;
+	highlightNextArea();
+}
+
+
+
+
+
+
+
+
+
+
+
