@@ -111,7 +111,7 @@ function initMenu(){
 				var text = new Kinetic.Text({
 					x:0,
 					y:i*button_height + fontSize/2 + 3,
-					text: 'Step '+i,
+					text: 'Step '+(i+1),
 					fontSize: fontSize,
 					fontFamily: 'sans-serif',
 					fill: 'white',

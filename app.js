@@ -71,11 +71,12 @@ function initMenu()
 			menuButtons[i] = new Kinetic.Group();
 
 			var rect = new Kinetic.Rect({
-				x: 0,
-		        y: i*button_height,
-		        width: menu_width,
-		        height: button_height-1,
-		        fill:'#444444'
+				x: 2,
+		        y: 2 + i*button_height,
+		        width: menu_width-4,
+		        height: button_height-2,
+		        fill:'#444444', 
+		        cornerRadius: 4
 			});
 
 			menuButtons[i].on('click', function(e){
@@ -85,7 +86,7 @@ function initMenu()
 			var text = new Kinetic.Text({
 				x:0,
 				y:i*button_height + fontSize/2 + 3,
-				text: 'Play 1',
+				text: 'Step '+(i+1),
 				fontSize: fontSize,
 				fontFamily: 'sans-serif',
 				fill: 'white',
@@ -110,11 +111,12 @@ function initMenu()
 	});
 
 	var rect = new Kinetic.Rect({
-		x: 0,
+		x: 2,
         y: 0,
-        width: menu_width/2,
-        height: button_height-1,
-        fill:'#444444'
+        width: menu_width/2-2,
+        height: button_height-2,
+        fill:'#444444',
+        cornerRadius:4
 	});
 
 	var text = new Kinetic.Text({
@@ -141,11 +143,12 @@ function initMenu()
 	});
 
 	var rect = new Kinetic.Rect({
-		x: 0,
+		x: 1,
         y: 0,
-        width: menu_width/2,
-        height: button_height-1,
-        fill:'#444444'
+        width: menu_width/2-4,
+        height: button_height-2,
+        fill:'#444444',
+        cornerRadius:4
 	});
 
 	var text = new Kinetic.Text({
@@ -347,9 +350,5 @@ function onStepFinished(){
 	goToNextStep();
 }
 
-
-function step1Clicked(){
-	
-}
 
 
