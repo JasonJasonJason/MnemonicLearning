@@ -1,30 +1,26 @@
 var menu_width = 200;
-var color_value  = 0;
 var button_height = 40;
-var overlaySteps  = new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
-var audioFileNames= new Array('audio/1.wav', 'audio/2.wav', 'audio/3.wav');
-var audioSteps    = new Array()
-var menuButtons   = new Array()
-var current_step  = -1;
+var overlaySteps  = new Array();
+var audioFileNames= new Array();
+var audioSteps    = new Array();
+var menuButtons   = new Array();
+var current_step  = 0;
 var overlay;
-var overlayed = false;
 var stage;
 var stageWidth;
 var stageHeight;
 var fontSize = 16;
-var playButton;
-var pauseButton;
 var img;
 
-var clickX;
-var clickY;
-var previousClickX;
-var previousClickY;
+var clickX = 0;
+var clickY = 0;
+var previousClickX = 0;
+var previousClickY = 0;
 var background;
 
 
-
 var layer = new Kinetic.Layer();
+
 var imageLoader = document.getElementById('imageLoader');
     imageLoader.addEventListener('change', handleImage, false);
 
@@ -57,25 +53,39 @@ function init(){
 		image:img
 	});
 	
-	overlay = getNewOverlay([0,0,stage.height, stage.width]);
+	overlay = getNewOverlay([0,0,100, 100]);
 
 	layer.add(background);
-	redrawOverlay();
+	layer.add(overlay);
 	stage.add(layer);
 
-	background.on('mousedown', onImageDown);
+	stage.on('mousedown', onImageDown);
+
+	
 }
 
 
-function redrawOverlay(){
+function redrawOverlay(x, y, width, height){
 
 	overlay.remove();
-	//overlay = getNewOverlay(clickX, clickY, previousClickX-clickX, previousClickY-clickY);
-	overlay = getNewOverlay([0,0,200,200]);
-	
-	layer.add(overlay);
-	
+	if(width < 0)
+	{
+		width = -width;
+		x -= width;
+	}
+	if(height < 0)
+	{
+		height = -height;
+		y -= height;
+	}
+	overlaySteps[current_step][0] = x;
+	overlaySteps[current_step][1] = y;
+	overlaySteps[current_step][2] = width;
+	overlaySteps[current_step][3] = height;
 
+	overlay = getNewOverlay([x, y, width, height]);
+	layer.add(overlay);
+	stage.draw();
 }
 
 
@@ -88,14 +98,14 @@ function getNewOverlay(highlightArea)
 
 	var rect = new Kinetic.Group(
 		{
-			x:menu_width,
-			opacity:1
+			x:0,
+			opacity:0.5
 		});
 
 	var top = new Kinetic.Rect({
         x: 0,
         y: 0,
-        width: stageWidth,
+        width: stageWidth-menu_width,
         height: area_y,
         fill:'black'
       });
@@ -139,26 +149,27 @@ function getNewOverlay(highlightArea)
 
 function onImageDown(e){
 
+
 	clickX = e.clientX;
 	clickY = e.clientY;
 	previousClickX = e.clientX;
 	previousClickY = e.clientY;
 
-	redrawOverlay();
+	redrawOverlay(clickX, clickY, previousClickX-clickX, previousClickY-clickY);
 	
-
-	background.on('mousemove', onImageMove);
-	background.on('mouseup', onImageUp);
+	stage.on('mousemove', onImageMove);
+	stage.on('mouseup', onImageUp);
 }
 function onImageMove(e){
 
-
 	previousClickX = e.clientX;
 	previousClickY = e.clientY;
-	redrawOverlay();
+	redrawOverlay(clickX, clickY, previousClickX-clickX, previousClickY-clickY);
 }
 function onImageUp(e){
 	
+	stage.off('mousemove', onImageMove);
+	stage.off('mouseup', onImageUp);
 }
 
 
