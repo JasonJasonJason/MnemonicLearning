@@ -26,21 +26,14 @@ var audioLoader = document.getElementById('audioLoader');
 
 function handleAudio(e){
 
-	for(i=0; i<e.target.files.length; i+=1)
-	{
-		file = e.target.files[i];
-		(function(file){
-			var reader = new FileReader();
-		    reader.onload = function(event){
-		        var audio = new Audio();
-		        audio.src = event.target.result;
-		        audioSteps[audioSteps.length] = audio;
-		    };
-		    reader.readAsDataURL(e.target.files[i]);     
-		}(file));
-	}
-
-	window.setTimeout(initMenu, 250);
+	var reader = new FileReader();
+    reader.onload = function(event){
+        var audio = new Audio();
+        audio.src = event.target.result;
+        audioSteps[audioSteps.length] = audio;
+        initMenu();
+    };
+    reader.readAsDataURL(e.target.files[0]);
 }
 
 
@@ -84,55 +77,77 @@ function init(){
 	layer.x = 200;
 	stage.add(layer);
 	
-
 	stage.draw();
 	stage.on('mousedown', onImageDown);
-
-	initMenu();
 }
 
 
 function initMenu(){
 
-	alert('number of audio steps: ' + audioSteps.length);
-
 	for(i=0; i<audioSteps.length; i++)
 	{
 		(function(i){
-			menuButtons[i] = new Kinetic.Group();
+			if(menuButtons[i] == null)
+			{
+				menuButtons[i] = new Kinetic.Group();
+				overlaySteps[i] = new Array();
 
-			var rect = new Kinetic.Rect({
-				x: 0,
-		        y: i*button_height,
-		        width: menu_width,
-		        height: button_height-1,
-		        fill:'#444444'
-			});
+				var rect = new Kinetic.Rect({
+					x: 0,
+			        y: i*button_height,
+			        width: menu_width,
+			        height: button_height-1,
+			        fill:'#444444'
+				});
 
-			menuButtons[i].on('click', function(e){
-				//goToStep(i);
-				audioSteps[i].play();
-			});
+				menuButtons[i].on('click', function(e){
 
-			var text = new Kinetic.Text({
-				x:0,
-				y:i*button_height + fontSize/2 + 3,
-				text: 'Play 1',
-				fontSize: fontSize,
-				fontFamily: 'sans-serif',
-				fill: 'white',
-				width:menu_width,
-				align: 'center'
-			});
+					onMenuItemClicked(i);
+				});
 
-			menuButtons[i].add(rect);
-			menuButtons[i].add(text);
+				var text = new Kinetic.Text({
+					x:0,
+					y:i*button_height + fontSize/2 + 3,
+					text: 'Step '+i,
+					fontSize: fontSize,
+					fontFamily: 'sans-serif',
+					fill: 'white',
+					width:menu_width,
+					align: 'center'
+				});
 
-			layer.add(menuButtons[i]);
-			alert('adding a menu button');
+				menuButtons[i].add(rect);
+				menuButtons[i].add(text);
+
+				layer.add(menuButtons[i]);
+			}
 		}(i));
 	}
 	stage.draw();
+}
+
+
+function onMenuItemClicked(index){
+
+	current_step = index;
+
+	for(i = 0; i<audioSteps.length; i+= 1)
+	{
+		audioSteps[i].pause();
+		audioSteps[i].currentTime = 0;
+	}
+
+	audioSteps[index].play();
+	setOverlay(index);
+}
+
+
+function setOverlay(index){
+
+	redrawOverlay(overlaySteps[index][0], 
+		overlaySteps[index][1],
+		overlaySteps[index][2],
+		overlaySteps[index][3]);
 }
 
 
@@ -219,6 +234,10 @@ function getNewOverlay(highlightArea)
 
 
 function onImageDown(e){
+
+	
+	if(e.clientX < menu_width)
+		return;
 
 	clickX = e.clientX - menu_width;
 	clickY = e.clientY;
