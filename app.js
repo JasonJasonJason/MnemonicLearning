@@ -1,8 +1,10 @@
 var menu_width = 200;
 var color_value  = 0;
-var button_height = 40;
-var overlaySteps  = new Array([10,10,100,100],[200,200,50,100],[100,300,100,50]);
-var audioFileNames= new Array('audio/1.wav', 'audio/2.wav', 'audio/3.wav');
+var button_height = 35;
+var overlaySteps  = new Array([0, 0, -1, -1], [525,75,75,110],[280,120,100,170],[420,95,120,200]
+	,[415, 85, 115, 65], [90, 30, 135, 100], [100, 160, 125, 160]);
+var audioFileNames= new Array('audio/learn/0.mp3', 'audio/learn/1.mp3', 'audio/learn/2.mp3', 'audio/learn/3.mp3',
+	'audio/learn/4.mp3', 'audio/learn/5.mp3', 'audio/learn/6.mp3');
 var audioSteps    = new Array()
 var menuButtons   = new Array()
 var current_step  = -1;
@@ -173,7 +175,7 @@ function highlightCurrentArea()
 
 var layer = new Kinetic.Layer();
 var img = new Image();
-img.src = 'img/sample.jpg';
+img.src = 'img/cell.jpg';
 img.onload = function(){
 
 	init();
@@ -186,6 +188,8 @@ function getNewOverlay(highlightArea)
 	var area_y = highlightArea[1];
 	var area_width = highlightArea[2];
 	var area_height = highlightArea[3];
+	if(area_width <= 0 || area_height <= 0)
+		return new Kinetic.Group();
 
 	var rect = new Kinetic.Group(
 		{
