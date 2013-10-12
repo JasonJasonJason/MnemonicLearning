@@ -10,6 +10,7 @@
     <!-- Le styles -->
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <script src="app.js"></script>
     
     <!-- Fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="bootstrap/ico/apple-touch-icon-144-precomposed.png">
@@ -19,9 +20,10 @@
                                    <link rel="shortcut icon" href="bootstrap/ico/favicon.png">
   </head>
 
-  <body>
+  <body onload="draw();">
 
   <h1>Hello!</h1>
+  <canvas id="app" width="400" height="400"></canvas>
       
     <!-- Le javascript
     ================================================== -->
