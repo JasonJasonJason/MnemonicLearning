@@ -121,6 +121,26 @@ function getNewOverlay(highlightArea)
 
 function goToStep(targetStep){
 
+	if(current_step >= 0)
+		audioSteps[current_step].pause();
+	if(overlayed){
+		new Kinetic.Tween({
+			node: overlay, 
+			duration: 0.5,
+			opacity: 0,
+			onFinish: function(){
+				goToStep2(targetStep);
+			}
+			}).play();
+		overlayed = false;
+	}
+	else{
+		goToStep2(targetStep);
+	}
+}
+
+function goToStep2(targetStep){
+
 	overlayed = true;
 	overlay.remove();
 	overlay = getNewOverlay(overlaySteps[targetStep]);
@@ -135,30 +155,13 @@ function goToStep(targetStep){
 	}).play();
 }
 
-function stopStep()
-{
-	if(current_step < 0)
-		return;
-	
-	audioSteps[current_step].pause();
-	if(overlayed){
-		new Kinetic.Tween({
-			node: overlay, 
-			duration: 0.5,
-			opacity: 0
-			}).play();
-		overlayed = false;
-	}
-}
-
 
 function onStageClicked(){
 
-	stopStep();
+	
 	goToStep(current_step + 1);
 
 	current_step += 1;
-
 }
 
 
